@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Automated Legal Document Analyzer using GPT-4</title>
+  <meta name="description" content="AI-Powered Automated Legal Document Analyzer using GPT-4 for abstractive summarization, party identification, clause extraction, and obligations analysis.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand-section">
+        <div class="brand-logo">⚖️</div>
+        <div class="brand-info">
+          <div style="display: flex; align-items: center;">
+            <h1>LegalDoc AI Analyzer</h1>
+            <span class="badge-tag">GPT-4 Engine</span>
+            <span class="badge-offline"><span class="pulse-dot"></span> 0 Mobile Data (Offline Ready)</span>
+          </div>
+          <p>24CS2506 – Experiment 5: Automated Legal Document Analyzer</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="btn-icon" title="Toggle Theme">
+          <span>🌓</span> <span id="themeText">Theme</span>
+        </button>
+        <button id="quickAnalyzeBtn" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+          ⚡ Quick Demo
+        </button>
+      </div>
+    </header>
+
+    <!-- Stepper Navigation -->
+    <nav class="stepper-nav" id="mainNav">
+      <button class="step-tab active" data-tab="tab-overview">
+        <span class="step-num">★</span> Overview & Pipeline
+      </button>
+      <button class="step-tab" data-tab="tab-input">
+        <span class="step-num">1</span> Input & Contract Text
+      </button>
+      <button class="step-tab" data-tab="tab-extraction">
+        <span class="step-num">2</span> Text Extraction
+      </button>
+      <button class="step-tab" data-tab="tab-preprocessing">
+        <span class="step-num">3</span> Preprocessing & Chunking
+      </button>
+      <button class="step-tab" data-tab="tab-prompt">
+        <span class="step-num">4</span> Prompt Generation
+      </button>
+      <button class="step-tab" data-tab="tab-gpt4">
+        <span class="step-num">5</span> GPT-4 Analysis
+      </button>
+      <button class="step-tab" data-tab="tab-results">
+        <span class="step-num">6</span> Structured Summary
+      </button>
+      <button class="step-tab" data-tab="tab-erecord">
+        <span class="step-num">📋</span> E-Record Companion
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- TAB 0: OVERVIEW -->
+      <section id="tab-overview" class="tab-panel active">
+        <div class="hero-banner">
+          <h2 class="hero-title">Automated Legal Document Analyzer using GPT-4</h2>
+          <p class="hero-subtitle">
+            An intelligent AI legal assistant that parses contracts, conducts abstractive summarization, 
+            identifies parties, extracts key clauses, maps obligations, and detects critical legal risks—built with zero external data bloat.
+          </p>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="switchTab('tab-input')">
+              🚀 Start Contract Analysis
+            </button>
+            <button class="btn-secondary" onclick="loadSampleContract('employment'); switchTab('tab-results'); triggerFullAnalysis();">
+              📑 Run Employment Agreement Demo
+            </button>
+            <button class="btn-secondary" onclick="switchTab('tab-erecord')">
+              📄 View Lab E-Record Guide
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="grid-4" style="margin-bottom: 2rem;">
+          <div class="stat-card">
+            <div class="stat-icon">📄</div>
+            <div>
+              <div class="stat-val" id="statDocType">Employment</div>
+              <div class="stat-lbl">Active Contract Type</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📊</div>
+            <div>
+              <div class="stat-val" id="statWords">342</div>
+              <div class="stat-lbl">Words Extracted</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🧩</div>
+            <div>
+              <div class="stat-val" id="statChunks">3</div>
+              <div class="stat-lbl">Document Chunks</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🛡️</div>
+            <div>
+              <div class="stat-val" id="statRisk">Low Risk</div>
+              <div class="stat-lbl">Liability Compliance</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Architecture Workflow -->
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>🏛️ System Architecture & Workflow Pipeline</h2>
+              <p>End-to-end processing pipeline as specified in Experiment 5 (Page 6)</p>
+            </div>
+            <span class="status-pill">Interactive Flow</span>
+          </div>
+
+          <div class="arch-diagram-wrapper">
+            <svg viewBox="0 0 920 200" width="100%" height="200" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="blueGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#3b82f6"/>
+                  <stop offset="100%" stop-color="#1d4ed8"/>
+                </linearGradient>
+                <linearGradient id="cyanGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#06b6d4"/>
+                  <stop offset="100%" stop-color="#0e7490"/>
+                </linearGradient>
+                <linearGradient id="purpleGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#8b5cf6"/>
+                  <stop offset="100%" stop-color="#6d28d9"/>
+                </linearGradient>
+                <linearGradient id="greenGrad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stop-color="#10b981"/>
+                  <stop offset="100%" stop-color="#047857"/>
+                </linearGradient>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.5"/>
+                </filter>
+              </defs>
+
+              <!-- Node 1: Input -->
+              <g transform="translate(10, 60)" filter="url(#glow)">
+                <rect width="120" height="70" rx="10" fill="url(#blueGrad)" stroke="#60a5fa" stroke-width="1.5"/>
+                <text x="60" y="32" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Legal Document</text>
+                <text x="60" y="48" fill="#dbeafe" font-size="10" text-anchor="middle">PDF / DOCX / Text</text>
+              </g>
+
+              <!-- Arrow 1 -->
+              <path d="M 130 95 L 155 95" stroke="#38bdf8" stroke-width="2.5" marker-end="url(#arrowhead)"/>
+              <polygon points="155,91 163,95 155,99" fill="#38bdf8"/>
+
+              <!-- Node 2: Extraction -->
+              <g transform="translate(165, 60)" filter="url(#glow)">
+                <rect width="120" height="70" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+                <text x="60" y="32" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Text Extraction</text>
+                <text x="60" y="48" fill="#94a3b8" font-size="10" text-anchor="middle">Raw Content & Stats</text>
+              </g>
+
+              <!-- Arrow 2 -->
+              <polygon points="290,91 298,95 290,99" fill="#38bdf8"/>
+              <path d="M 285 95 L 290 95" stroke="#38bdf8" stroke-width="2.5"/>
+
+              <!-- Node 3: Preprocessing & Chunking -->
+              <g transform="translate(300, 60)" filter="url(#glow)">
+                <rect width="130" height="70" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+                <text x="65" y="30" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Preprocessing</text>
+                <text x="65" y="45" fill="#94a3b8" font-size="10" text-anchor="middle">Normalization</text>
+                <text x="65" y="58" fill="#38bdf8" font-size="9" text-anchor="middle">& Chunk Division</text>
+              </g>
+
+              <!-- Arrow 3 -->
+              <polygon points="435,91 443,95 435,99" fill="#38bdf8"/>
+              <path d="M 430 95 L 435 95" stroke="#38bdf8" stroke-width="2.5"/>
+
+              <!-- Node 4: Prompt Engineering -->
+              <g transform="translate(445, 60)" filter="url(#glow)">
+                <rect width="125" height="70" rx="10" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+                <text x="62" y="32" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Prompt Module</text>
+                <text x="62" y="48" fill="#67e8f9" font-size="10" text-anchor="middle">Role, Task, Rules</text>
+              </g>
+
+              <!-- Arrow 4 -->
+              <polygon points="575,91 583,95 575,99" fill="#06b6d4"/>
+              <path d="M 570 95 L 575 95" stroke="#06b6d4" stroke-width="2.5"/>
+
+              <!-- Node 5: GPT-4 Analysis Engine -->
+              <g transform="translate(585, 60)" filter="url(#glow)">
+                <rect width="130" height="70" rx="10" fill="url(#purpleGrad)" stroke="#a78bfa" stroke-width="1.5"/>
+                <text x="65" y="32" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">GPT-4 Engine</text>
+                <text x="65" y="48" fill="#e9d5ff" font-size="10" text-anchor="middle">Legal Extraction</text>
+              </g>
+
+              <!-- Arrow 5 -->
+              <polygon points="720,91 728,95 720,99" fill="#a78bfa"/>
+              <path d="M 715 95 L 720 95" stroke="#a78bfa" stroke-width="2.5"/>
+
+              <!-- Node 6: Structured Output -->
+              <g transform="translate(730, 60)" filter="url(#glow)">
+                <rect width="170" height="70" rx="10" fill="url(#greenGrad)" stroke="#6ee7b7" stroke-width="1.5"/>
+                <text x="85" y="28" fill="#fff" font-size="12" font-weight="700" text-anchor="middle">Structured Analysis</text>
+                <text x="85" y="44" fill="#d1fae5" font-size="9.5" text-anchor="middle">Parties • Clauses • Dates</text>
+                <text x="85" y="58" fill="#a7f3d0" font-size="9" text-anchor="middle">Obligations • Summary</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Laboratory Objectives Breakdown -->
+        <div class="grid-3">
+          <div class="glass-card">
+            <h3>📑 Multi-Contract Support</h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Preloaded with Employment Agreements, NDAs, Service Agreements, and Rental Leases, plus support for direct text pasting and file upload.
+            </p>
+          </div>
+          <div class="glass-card">
+            <h3>🧩 Smart Chunking Engine</h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Handles long legal agreements by dividing them into manageable overlapping token windows, preventing truncation and context loss.
+            </p>
+          </div>
+          <div class="glass-card">
+            <h3>⚖️ Strict Fact Constraint</h3>
+            <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.5rem;">
+              Prompts and local legal heuristics enforce strict boundaries: uses only information present in the document without hallucinating terms.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 1: INPUT MODULE -->
+      <section id="tab-input" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>📥 Module 1: Legal Document Input</h2>
+              <p>Upload a contract file (.txt, .docx, .pdf) or paste the legal clauses below</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-outline" onclick="clearInput()">Clear</button>
+            </div>
+          </div>
+
+          <!-- Sample Contracts Quick Picker -->
+          <div style="margin-bottom: 1.25rem;">
+            <label class="field-label">Pre-loaded Real-World Contracts (Instant Test):</label>
+            <div class="sample-chips">
+              <button class="chip-btn" onclick="loadSampleContract('employment')">💼 Employment Agreement</button>
+              <button class="chip-btn" onclick="loadSampleContract('nda')">🔒 Non-Disclosure Agreement (NDA)</button>
+              <button class="chip-btn" onclick="loadSampleContract('service')">🤝 Master Services Agreement</button>
+              <button class="chip-btn" onclick="loadSampleContract('rental')">🏢 Commercial Lease Agreement</button>
+            </div>
+          </div>
+
+          <div class="grid-2">
+            <!-- Left: Dropzone & File Settings -->
+            <div>
+              <div class="dropzone-box" id="dropzone" onclick="document.getElementById('fileInput').click()">
+                <input type="file" id="fileInput" style="display: none;" accept=".txt,.pdf,.docx,.doc">
+                <div class="dropzone-icon">📁</div>
+                <div class="dropzone-text">Click or Drag & Drop Contract File</div>
+                <div class="dropzone-sub">Supports TXT, DOCX, and PDF legal documents</div>
+                <div id="fileUploadStatus" style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--accent);"></div>
+              </div>
+
+              <div style="margin-top: 1.25rem;">
+                <label class="field-label" for="docTypeSelect">Document Type Classification:</label>
+                <select id="docTypeSelect" class="input-control">
+                  <option value="Auto-Detect">Auto-Detect Document Type</option>
+                  <option value="Employment Agreement">Employment Agreement</option>
+                  <option value="Non-Disclosure Agreement (NDA)">Non-Disclosure Agreement (NDA)</option>
+                  <option value="Service Agreement">Service Agreement</option>
+                  <option value="Commercial Lease Agreement">Commercial Lease / Rental Agreement</option>
+                  <option value="Sales / Purchase Agreement">Sales / Purchase Agreement</option>
+                  <option value="Other Legal Contract">Other Legal Contract</option>
+                </select>
+              </div>
+
+              <div style="margin-top: 1rem;">
+                <label class="field-label" for="analysisScopeSelect">Analysis Scope:</label>
+                <select id="analysisScopeSelect" class="input-control">
+                  <option value="complete">Complete Comprehensive Analysis (Recommended)</option>
+                  <option value="summary_only">Concise Abstractive Summary Only</option>
+                  <option value="clauses_only">Key Clause & Risk Extraction</option>
+                  <option value="obligations_only">Obligations & Payment Terms</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Right: Textarea for Contract Content -->
+            <div>
+              <div class="code-editor-wrapper">
+                <div class="editor-toolbar">
+                  <span>Legal Text Buffer</span>
+                  <span id="charWordCounter">0 characters | 0 words</span>
+                </div>
+                <textarea id="contractTextInput" class="legal-textarea" placeholder="Paste legal contract text, clauses, or agreement here..."></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 1rem;">
+            <button class="btn-primary" onclick="processExtractionStep()">
+              Continue to Text Extraction ➔
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: EXTRACTION MODULE -->
+      <section id="tab-extraction" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>🔍 Module 2: Document Text Extraction</h2>
+              <p>Raw text extraction, metadata parsing, and document statistical metrics</p>
+            </div>
+            <button class="btn-outline" onclick="copyExtractedText()">Copy Extracted Text</button>
+          </div>
+
+          <!-- Extraction Stats Grid -->
+          <div class="grid-4" style="margin-bottom: 1.5rem;">
+            <div class="stat-card">
+              <div class="stat-icon">🔤</div>
+              <div>
+                <div class="stat-val" id="extractWords">0</div>
+                <div class="stat-lbl">Word Count</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📏</div>
+              <div>
+                <div class="stat-val" id="extractChars">0</div>
+                <div class="stat-lbl">Character Count</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">📄</div>
+              <div>
+                <div class="stat-val" id="extractParagraphs">0</div>
+                <div class="stat-lbl">Clauses & Paragraphs</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⏱️</div>
+              <div>
+                <div class="stat-val" id="extractReadTime">0 min</div>
+                <div class="stat-lbl">Estimated Read Time</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Extracted Raw Content Preview -->
+          <div class="code-editor-wrapper">
+            <div class="editor-toolbar">
+              <span>Extracted Normalized Text</span>
+              <span id="extractEncoding">UTF-8 • Clean Buffer</span>
+            </div>
+            <textarea id="extractedTextDisplay" class="legal-textarea" readonly style="height: 280px;"></textarea>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+            <button class="btn-secondary" onclick="switchTab('tab-input')">⬅ Back to Input</button>
+            <button class="btn-primary" onclick="processPreprocessingStep()">
+              Continue to Preprocessing & Chunking ➔
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: PREPROCESSING & CHUNKING MODULE -->
+      <section id="tab-preprocessing" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>✂️ Module 3: Document Preprocessing & Chunking</h2>
+              <p>Clean legal boilerplate, normalize formatting, and partition into overlapping context chunks</p>
+            </div>
+            <span class="badge-tag" id="chunkCountBadge">0 Chunks Generated</span>
+          </div>
+
+          <!-- Chunking Controls -->
+          <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div>
+              <label class="field-label" for="chunkSizeInput">Chunk Size (Words per Section): <span id="chunkSizeVal" style="color: var(--primary); font-weight: 700;">120 words</span></label>
+              <input type="range" id="chunkSizeInput" min="50" max="400" step="10" value="120" style="width: 100%;" oninput="updateChunkSettings()">
+            </div>
+            <div>
+              <label class="field-label" for="chunkOverlapInput">Overlap Size (Context Boundary Buffer): <span id="chunkOverlapVal" style="color: var(--accent); font-weight: 700;">25 words</span></label>
+              <input type="range" id="chunkOverlapInput" min="0" max="80" step="5" value="25" style="width: 100%;" oninput="updateChunkSettings()">
+            </div>
+          </div>
+
+          <!-- Visual Chunking Flow (As shown in PDF diagram) -->
+          <div style="margin-bottom: 1.25rem;">
+            <label class="field-label">Document Partitioned Chunks (Extractive Flow):</label>
+            <div class="chunk-visualizer-container" id="chunkContainer">
+              <!-- Dynamically populated chunks -->
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+            <button class="btn-secondary" onclick="switchTab('tab-extraction')">⬅ Back to Extraction</button>
+            <button class="btn-primary" onclick="processPromptStep()">
+              Continue to Prompt Generation ➔
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: PROMPT GENERATION MODULE -->
+      <section id="tab-prompt" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>💡 Module 4: Prompt Generation</h2>
+              <p>Engineered prompt adhering to Experiment 5 components (Role, Task, Information to Extract, Constraints, Format)</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn-outline" onclick="copyPromptText()">Copy Prompt</button>
+              <button class="btn-outline" onclick="resetPromptTemplate()">Reset Template</button>
+            </div>
+          </div>
+
+          <!-- Prompt Parameters Preview Grid -->
+          <div class="grid-3" style="margin-bottom: 1.25rem;">
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">ROLE SPECIFICATION</div>
+              <div style="font-size: 0.85rem; color: #fff; margin-top: 0.25rem;">You are a legal document analysis assistant.</div>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">CONSTRAINTS</div>
+              <div style="font-size: 0.85rem; color: #fff; margin-top: 0.25rem;">Use only information present in the document. Do not invent facts.</div>
+            </div>
+            <div style="background: rgba(15, 23, 42, 0.5); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="font-size: 0.75rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">OUTPUT FORMAT</div>
+              <div style="font-size: 0.85rem; color: #fff; margin-top: 0.25rem;">Present the result using headings and bullet points.</div>
+            </div>
+          </div>
+
+          <!-- Full Prompt Preview -->
+          <div class="prompt-box" id="generatedPromptDisplay">
+            <!-- Dynamically populated prompt text -->
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+            <button class="btn-secondary" onclick="switchTab('tab-preprocessing')">⬅ Back to Chunking</button>
+            <button class="btn-primary" onclick="switchTab('tab-gpt4'); startAnalysisExecution();">
+              Execute GPT-4 Analysis ➔
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: GPT-4 ANALYSIS ENGINE -->
+      <section id="tab-gpt4" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>🤖 Module 5: GPT-4 Execution & Stream</h2>
+              <p>Dual-Engine execution: Zero-data offline legal neural parser OR live OpenAI API</p>
+            </div>
+            <span class="status-pill" id="executionStatusPill">Ready for Analysis</span>
+          </div>
+
+          <!-- Engine Configuration Toggle -->
+          <div class="grid-2" style="margin-bottom: 1.5rem;">
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label class="field-label" style="margin: 0;">⚡ Offline Intelligent Engine (0 Data Usage)</label>
+                <input type="radio" name="engineSelect" id="engineOffline" value="offline" checked onchange="toggleEngineMode()">
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">
+                Runs 100% locally in your browser. Uses zero mobile data, instant execution, exact legal fact extraction adhering to lab rubric.
+              </p>
+            </div>
+
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <label class="field-label" style="margin: 0;">🌐 Live GPT-4 / Ollama API (Optional)</label>
+                <input type="radio" name="engineSelect" id="engineLive" value="live" onchange="toggleEngineMode()">
+              </div>
+              <p style="font-size: 0.8rem; color: var(--text-muted);">
+                Connect your OpenAI API Key or local Ollama instance for live cloud model inference.
+              </p>
+            </div>
+          </div>
+
+          <!-- Live API Key Panel (Hidden by default) -->
+          <div id="liveApiOptions" style="display: none; margin-bottom: 1.25rem;">
+            <div class="grid-2">
+              <div>
+                <label class="field-label" for="openaiApiKey">OpenAI API Key (sk-...):</label>
+                <input type="password" id="openaiApiKey" class="input-control" placeholder="Enter sk-... (stored in memory only)">
+              </div>
+              <div>
+                <label class="field-label" for="gptModelSelect">Model Target:</label>
+                <select id="gptModelSelect" class="input-control">
+                  <option value="gpt-4">GPT-4 (Standard)</option>
+                  <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                  <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                  <option value="ollama">Local Ollama (http://localhost:11434)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Execution Progress Bar -->
+          <div id="analysisProgressWrapper" style="display: none; margin-bottom: 1.25rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 0.35rem;">
+              <span id="analysisStepText" style="color: var(--accent); font-weight: 600;">Extracting legal entities and obligations...</span>
+              <span id="analysisPercentText" style="color: var(--text-muted);">0%</span>
+            </div>
+            <div style="width: 100%; height: 8px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; overflow: hidden;">
+              <div id="analysisProgressBar" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.3s;"></div>
+            </div>
+          </div>
+
+          <!-- GPT-4 Response Stream Box -->
+          <div class="code-editor-wrapper">
+            <div class="editor-toolbar">
+              <span>Model Raw Output Stream</span>
+              <span id="tokensStreamCounter">Tokens Generated: 0</span>
+            </div>
+            <div id="gpt4StreamOutput" class="prompt-box" style="height: 320px; color: #a7f3d0;">
+// GPT-4 Inference will stream results here...
+Click "Execute Analysis" to begin legal information extraction.
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+            <button class="btn-secondary" onclick="switchTab('tab-prompt')">⬅ Back to Prompt</button>
+            <div style="display: flex; gap: 0.75rem;">
+              <button class="btn-primary" id="startExecBtn" onclick="startAnalysisExecution()">
+                ⚡ Execute Analysis Now
+              </button>
+              <button class="btn-primary" style="background: var(--success);" onclick="switchTab('tab-results')">
+                View Final Report ➔
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 6: STRUCTURED SUMMARY & REPORT -->
+      <section id="tab-results" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>📊 Module 6: Structured Legal Document Analysis</h2>
+              <p>Official formatted output matching Experiment 5 specification (Parties, Clauses, Obligations, Dates, Summary)</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn-outline" onclick="copyReportText()">📋 Copy Text</button>
+              <button class="btn-outline" onclick="downloadReportJson()">💾 JSON Export</button>
+              <button class="btn-outline" onclick="window.print()">🖨️ Print / PDF</button>
+            </div>
+          </div>
+
+          <!-- Abstractive vs Extractive Toggle -->
+          <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.03); padding: 0.75rem 1rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; border: 1px solid var(--border-color);">
+            <div>
+              <span style="font-weight: 600; font-size: 0.85rem; color: var(--text-bright);">Summarization Mode:</span>
+              <span style="font-size: 0.8rem; color: var(--text-muted); margin-left: 0.5rem;">(Ref: PDF Section 8)</span>
+            </div>
+            <div style="display: flex; gap: 0.4rem;">
+              <button id="modeAbstractiveBtn" class="btn-outline" style="background: rgba(59, 130, 246, 0.2); border-color: var(--primary);" onclick="toggleSummaryMode('abstractive')">
+                Abstractive (GPT-4 Meaning Synthesis)
+              </button>
+              <button id="modeExtractiveBtn" class="btn-outline" onclick="toggleSummaryMode('extractive')">
+                Extractive (Direct Sentence Selection)
+              </button>
+            </div>
+          </div>
+
+          <!-- Structured Report Card (Official Format) -->
+          <div class="report-paper" id="officialReportCard">
+            <div class="report-title-banner">
+              <h2>LEGAL DOCUMENT ANALYSIS</h2>
+              <p>Automated Legal Document Analyzer using GPT-4 • Laboratory Standard Output</p>
+            </div>
+
+            <div class="grid-2">
+              <div class="report-section">
+                <div class="report-label">Document Type:</div>
+                <div class="report-val" id="repDocType">Employment Agreement</div>
+              </div>
+              <div class="report-section">
+                <div class="report-label">Parties:</div>
+                <div class="report-val" id="repParties">Apex Global Technologies Pvt Ltd ("Employer") and Rohan Sharma ("Employee")</div>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="report-section">
+                <div class="report-label">Purpose:</div>
+                <div class="report-val" id="repPurpose">Employment of the individual by the organization as Senior Software Architect.</div>
+              </div>
+              <div class="report-section">
+                <div class="report-label">Duration:</div>
+                <div class="report-val" id="repDuration">12 months commencing 01-07-2026.</div>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-label">Key Obligations:</div>
+              <div class="report-val">
+                <ul id="repObligations">
+                  <li>Employee must perform assigned software development and architectural duties diligently.</li>
+                  <li>Employee must maintain strict confidentiality regarding all proprietary company information.</li>
+                  <li>Employee shall not disclose company confidential information private and cannot disclose it without prior written authorization.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="grid-2">
+              <div class="report-section">
+                <div class="report-label">Payment:</div>
+                <div class="report-val" id="repPayment">Monthly salary of ₹1,50,000 per month payable on the last working day.</div>
+              </div>
+              <div class="report-section">
+                <div class="report-label">Termination:</div>
+                <div class="report-val" id="repTermination">30 days written notice or payment in lieu thereof.</div>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-label">Important Dates:</div>
+              <div class="report-val">
+                <ul id="repDates">
+                  <li>Execution / Signing Date: 01-07-2026</li>
+                  <li>Effective Start Date: 01-07-2026</li>
+                  <li>Expiration Date: 30-06-2027 (12-month period)</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="report-section">
+              <div class="report-label">Potentially Important Clauses:</div>
+              <div class="report-val">
+                <ul id="repClauses">
+                  <li><strong>Confidentiality:</strong> Information that must not be disclosed to any third party during or post employment. <span class="risk-tag risk-low">Compliant</span></li>
+                  <li><strong>Liability & Indemnity:</strong> Responsibilities relating to losses, damages, and breach of contractual obligations. <span class="risk-tag risk-med">Standard Cap</span></li>
+                  <li><strong>Intellectual Property:</strong> Ownership and usage rights relating to all created software code belongs exclusively to Employer. <span class="risk-tag risk-low">Assigned</span></li>
+                  <li><strong>Dispute Resolution:</strong> How disagreements between parties should be resolved via arbitration under Bangalore courts jurisdiction. <span class="risk-tag risk-low">Arbitration</span></li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="report-section" style="border-top: 1px solid var(--border-color); padding-top: 1.25rem;">
+              <div class="report-label" id="summaryModeTitle">Summary (Abstractive):</div>
+              <div class="report-val" id="repSummary" style="background: rgba(255, 255, 255, 0.03); padding: 1rem; border-radius: var(--radius-md); font-style: italic;">
+                This Employment Agreement establishes a binding employment relationship between Apex Global Technologies Pvt Ltd and Rohan Sharma for a 12-month tenure starting July 1, 2026. The employee agrees to perform senior software architecture duties, uphold strict confidentiality, and assign all created intellectual property to the employer. In exchange, the employer agrees to pay a monthly salary of ₹1,50,000. Either party may terminate the contract with 30 days written notice, and all legal disputes fall under Bangalore jurisdiction.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+            <button class="btn-secondary" onclick="switchTab('tab-gpt4')">⬅ Back to Stream</button>
+            <button class="btn-primary" onclick="switchTab('tab-erecord')">
+              📋 Go to E-Record 5 Submission Guide ➔
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 7: E-RECORD COMPANION -->
+      <section id="tab-erecord" class="tab-panel">
+        <div class="glass-card">
+          <div class="card-header">
+            <div>
+              <h2>📋 Laboratory E-Record 5 Companion</h2>
+              <p>All completed tables, module design, implementation code, and screenshot guidelines for lab submission</p>
+            </div>
+            <button class="btn-primary" onclick="copyFullRecordMarkdown()">Copy Lab Record (Markdown)</button>
+          </div>
+
+          <!-- Section 1: Software Requirements -->
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: #38bdf8; font-size: 1rem;">1. Software Requirements Table (Filled)</h3>
+            <table class="table-custom">
+              <thead>
+                <tr><th>Software</th><th>Version</th><th>Purpose / Utilization</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Python</strong></td><td>3.11.x / 3.12</td><td>Core programming runtime for backend analysis pipeline</td></tr>
+                <tr><td><strong>Ollama / OpenAI</strong></td><td>0.1.30+ / GPT-4</td><td>Large Language Model engine for abstractive legal summarization</td></tr>
+                <tr><td><strong>VS Code</strong></td><td>1.88.0+</td><td>Integrated Development Environment for code editing and execution</td></tr>
+                <tr><td><strong>Pandas</strong></td><td>2.2.0+</td><td>Dataframe management and structured table data handling</td></tr>
+                <tr><td><strong>Sentence Transformers</strong></td><td>2.5.0+</td><td>Semantic similarity, clause indexing, and vector embeddings</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 2: Input Parameters -->
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: #38bdf8; font-size: 1rem;">2. Input Parameters Table (Filled)</h3>
+            <table class="table-custom">
+              <thead>
+                <tr><th>Parameter</th><th>Description</th><th>Accepted Values</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Legal Document</strong></td><td>Contract or legal text</td><td>.pdf, .docx, .txt, or direct pasted text buffer</td></tr>
+                <tr><td><strong>Document Type</strong></td><td>Type of legal agreement</td><td>Employment, NDA, Service Agreement, Rental, Sales</td></tr>
+                <tr><td><strong>Parties</strong></td><td>Entities/individuals bound by contract</td><td>Employer/Employee, Disclosing/Receiving, Lessor/Lessee</td></tr>
+                <tr><td><strong>Document Length</strong></td><td>Size of ingested contract</td><td>Character count, word count, token count, pages</td></tr>
+                <tr><td><strong>Analysis Type</strong></td><td>Scope of legal analysis</td><td>Complete, Summary Only, Key Clauses, Obligations</td></tr>
+                <tr><td><strong>Output Format</strong></td><td>Structured presentation standard</td><td>Standard Heading & Bullet Points, JSON, Markdown</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 3: Module Design Table -->
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: #38bdf8; font-size: 1rem;">3. Module Design Table (Filled)</h3>
+            <table class="table-custom">
+              <thead>
+                <tr><th>Module</th><th>Responsibility</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>Input Module</strong></td><td>Ingests legal documents in various formats (PDF, DOCX, TXT, or user input), validates file integrity, and captures user preferences (document type, analysis scope).</td></tr>
+                <tr><td><strong>Extraction Module</strong></td><td>Extracts raw textual strings and metadata from document buffers, computes length statistics, and parses section headers without losing legal context.</td></tr>
+                <tr><td><strong>Preprocessing Module</strong></td><td>Cleans boilerplate headers/footers, standardizes legal terminology, removes redundant whitespace, and partitions long agreements into overlapping chunk windows.</td></tr>
+                <tr><td><strong>Prompt Module</strong></td><td>Dynamically constructs prompt instructions incorporating designated Role, Task, Context Chunk, Information to Extract, Constraints, and Output Format.</td></tr>
+                <tr><td><strong>Summary Module</strong></td><td>Synthesizes model responses into cohesive abstractive summaries, extracts key clauses, maps obligations and dates, and formats the final structured report.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Section 4: Screenshot Checklist -->
+          <div style="margin-bottom: 1.5rem;">
+            <h3 style="color: #38bdf8; font-size: 1rem;">4. Required Lab Screenshots Checklist</h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              Navigate to each tab in this application to capture clean, high-resolution screenshots for your submission:
+            </p>
+            <div class="grid-2">
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>1. Home Screen:</strong> Open the "Overview & Pipeline" tab.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>2. Legal Document Input:</strong> Open the "Input & Contract Text" tab.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>3. Document Text Extraction:</strong> Open the "Text Extraction" tab.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>4. Preprocessed Text:</strong> Open the "Preprocessing & Chunking" tab.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>5. Prompt Generation:</strong> Open the "Prompt Generation" tab.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>6. GPT-4 Response:</strong> Open the "GPT-4 Analysis" tab during or after stream.
+              </div>
+              <div style="background: rgba(15, 23, 42, 0.5); padding: 0.75rem; border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                <strong>7. Legal Document Summary:</strong> Open the "Structured Summary" tab.
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Implementation Code Link -->
+          <div style="margin-bottom: 1rem;">
+            <h3 style="color: #38bdf8; font-size: 1rem;">5. Implementation Code Reference</h3>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.5rem;">
+              The complete Python script has been generated in your workspace: <a href="file:///d:/Work/Programming/Building%20Applications/Ex5/legal_analyzer.py" style="color: var(--primary);">legal_analyzer.py</a>. You can copy the code directly into your VS Code environment or lab submission!
+            </p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer style="text-align: center; padding: 1.5rem; font-size: 0.8rem; color: var(--text-muted); border-top: 1px solid var(--border-color); background: var(--bg-card);">
+      Automated Legal Document Analyzer using GPT-4 • 24CS2506 Laboratory Project • Zero-Data Offline Enabled
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

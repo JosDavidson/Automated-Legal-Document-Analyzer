@@ -1,0 +1,18 @@
+# Exclude e-records and preparation documents
+*RECORD*
+*PREPARATION*
+*.docx
+*.pdf
+PROJECT_DOCUMENTATION.md
+
+# Environment & Dependencies
+node_modules/
+.env
+__pycache__/
+*.pyc
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
